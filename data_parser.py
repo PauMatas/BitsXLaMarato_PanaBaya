@@ -37,7 +37,7 @@ inpdf[123, 696] = inpdf[123, 697] = inpdf[123, 764] = 2
 def make_up(x, l):
     val = l[x]
 
-    if val == 9 and val in binary_w_uknw_cols:
+    if val == 9 and x in binary_w_uknw_cols:
         return 3
 
     if isinstance(val, str) or np.isnan(val):
