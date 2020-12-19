@@ -26,7 +26,7 @@ binary_w_uknw_cols = [36, 39, 43, 45, 47, 49, 53, 55, 57, 59, 61, 75, 77, 79,
 
 date_columns = [117, 122, 189, 194]
 
-others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 135, 143, 187, 191, 192,
+others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 143, 187, 191, 192,
          193, 194, 195, 197]
 
 #Corrections
@@ -53,15 +53,9 @@ def make_up(x, l):
     return val
 
 def parser_by_row(patient_id, l):
-    patient_data = []
+    patient_data = [patient_id]
 
-    # patient_id
-    patient_data += [patient_id]
-    # sanitary_id
-    patient_data += l[1]
-
-    for x in useful_columns:
-        patient_data += make_up(x-1, l)
+    patient_data += [make_up(x-1, l) for x in useful_columns]
 
 
     return patient_data
