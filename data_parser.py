@@ -3,6 +3,7 @@ import numpy as np
 
 inpdf = pd.read_csv("COPEDICATClinicSympt_DATA_2020-12-17_1642.csv")
 dd = []
+
 useful_columns = [3, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
                   29, 30, 31, 32, 34, 35, 36, 39, 43, 45, 47, 49, 53, 55,
                   57, 59, 61, 65, 69, 70, 73, 75, 77, 79, 81, 85, 87, 94, 95, 96, 97, 101, 102, 108, 104, 114,
@@ -25,12 +26,13 @@ binary_w_uknw_cols = [36, 39, 43, 45, 47, 49, 53, 55, 57, 59, 61, 75, 77, 79,
 
 date_columns = [117, 122, 189, 194]
 
-others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 136, 143, 191, 192,
-         193, 194, 197]
+others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 135, 143, 187, 191, 192,
+         193, 194, 195, 197]
 
-"""
-name [type] (col in df)
-"""
+#Corrections
+inpdf[118, 624] = inpdf[118, 436] = inpdf[118, 423] = inpdf[118, 713] = inpdf[118, 744] = 2
+inpdf[118, 764] = inpdf[118, 960] = 1
+inpdf[123, 696] = inpdf[123, 697] = inpdf[123, 764] = 2
 
 def make_up(x, l):
     val = l[x]
@@ -53,13 +55,14 @@ def make_up(x, l):
 def parser_by_row(patient_id, l):
     patient_data = []
 
-    # patient_id [int] (0)
-    patient_data.append(patient_id)
+    # patient_id
+    patient_data += [patient_id]
+    # sanitary_id
+    patient_data += l[1]
 
-    patient_data += [make_up(x-1, l) for x in useful_columns]
+    for x in useful_columns:
+        patient_data += make_up(x-1, l)
 
-    # sanitary_id [string] (1)
-    patient_data.append(l[1])
 
     return patient_data
 
@@ -77,3 +80,6 @@ dd = parse()
 headers = ['id'] + [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns] + ['_']
 
 pd.DataFrame(dd).to_csv('clean_data.csv', header = headers)
+
+res = [[i for i in range(len(inpdf[135]))], inpdf[135]]
+pd.DataFrame(res).to_csv('results_data.csv', header = headers)
