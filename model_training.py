@@ -37,3 +37,14 @@ for column in data.columns:
             impactful_variables.append(column)
 
 print(impactful_variables)
+y = diagnosis
+X = diagnosis.loc[:,impactful_variables]
+X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=1)
+
+
+# Logistic Regression
+logreg = LogisticRegression()
+logreg.fit(X_train, y_train)
+y_pred = logreg.predict(X_val)
+acc_log = round(logreg.score(X_train, y_train) * 100, 2)
+print('logreg accuracy:', acc_log)
