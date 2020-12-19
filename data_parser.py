@@ -26,7 +26,7 @@ binary_w_uknw_cols = [36, 39, 43, 45, 47, 49, 53, 55, 57, 59, 61, 75, 77, 79,
 
 date_columns = [117, 122, 189]
 
-others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 135, 136, 143, 187, 191, 192,
+others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 135, 143, 187, 191, 192,
          193, 194, 195, 197]
 
 #Corrections
@@ -60,7 +60,8 @@ def parser_by_row(patient_id, l):
     # patient_id [int] (0)
     patient_data.append(patient_id)
 
-    patient_data += [make_up(x-1, l) for x in useful_columns]
+    for x in useful_columns:
+        patient_data += make_up(x-1, l)
 
     # sanitary_id [string] (1)
     patient_data.append(l[1])
@@ -79,3 +80,6 @@ dd = parse()
 headers = ['id'] + [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns] + ['_']
 
 pd.DataFrame(dd).to_csv('clean_data.csv', header = headers)
+
+res = [[i for i in range(len(inpdf[135]))], inpdf[135]]
+pd.DataFrame(res).to_csv('results_data.csv', header = headers)
