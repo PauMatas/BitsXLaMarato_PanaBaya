@@ -71,9 +71,12 @@ def parse():
 
 dd = parse()
 
-headers = ['id'] + [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns] + ['_']
+headers = ['id'] + [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns]
 
 pd.DataFrame(dd).to_csv('clean_data.csv', header = headers)
 
-res = [[i for i in range(len(inpdf[135]))], inpdf[135]]
-pd.DataFrame(res).to_csv('results_data.csv', header = headers)
+res = []
+for i in range(len(inpdf.iloc[:,135])):
+    res += [[i,inpdf.iloc[i,135]]]
+    
+pd.DataFrame(res).to_csv('results_data.csv', header = ['id', 'final_diagnosis_code'])
