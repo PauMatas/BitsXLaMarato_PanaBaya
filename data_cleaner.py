@@ -1,8 +1,16 @@
 import pandas as pd
 import numpy as np
+import sys
 
-inpdf = pd.read_csv("COPEDICATClinicSympt_DATA_2020-12-17_1642.csv")
+file_name = input("Input data file name:")
+try:
+  aa = pd.read_csv(file_name)
+except:
+  print("File: '" + file_name + "' does not exist.")
+  sys.exit()
+
 dd = []
+inpdf = aa[aa['final_diagnosis_code'] != 2]
 
 useful_columns = [3, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
                   29, 30, 31, 32, 34, 35, 36, 39, 43, 45, 47, 49, 53, 55,
@@ -55,16 +63,7 @@ def parser_by_row(patient_id, l):
     patient_data = [make_up(x-1, l) for x in useful_columns]
     return patient_data
 
-
-def parse():
-
-    # sat_hb_o2_value.fillna(sat_hb_o2_value.mean())
-
-    dd = [parser_by_row(i, inpdf.iloc[i]) for i in range(len(inpdf))]
-
-    return dd
-
-dd = parse()
+dd = [parser_by_row(i, inpdf.iloc[i]) for i in range(len(inpdf))]
 
 headers = [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns]
 
@@ -72,3 +71,5 @@ pd.DataFrame(dd).to_csv('clean_data.csv', header = headers, index = False)
 
 res = np.array(inpdf.iloc[:,135])
 pd.DataFrame(res).to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
+
+print("Data cleaning done.")
