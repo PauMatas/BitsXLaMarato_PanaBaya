@@ -6,10 +6,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
 
 data = pd.read_csv("clean_data.csv")
+diagnosis = pd.read_csv("diagnosis_data.csv")
 
 def test_hipotesis(column, data):
     clean_list1, clean_list2 = [], []
-    a, b = np.array(data[column]), np.array(data['final_diagnosis_code'])
+    a, b = np.array(data[column]), np.array(diagnosis['final_diagnosis_code'])
     for i in range(len(a)):
         if not np.isnan(a[i]) and not np.isnan(b[i]):
             clean_list1.append(a[i])

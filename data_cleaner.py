@@ -7,8 +7,7 @@ dd = []
 useful_columns = [3, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
                   29, 30, 31, 32, 34, 35, 36, 39, 43, 45, 47, 49, 53, 55,
                   57, 59, 61, 65, 69, 70, 73, 75, 77, 79, 81, 85, 87, 94, 95, 96, 97, 101, 102, 108, 104, 114,
-                  115, 116, 117, 118, 119, 120, 122, 123, 124, 131, 136,
-                  141, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,
+                  115, 131, 141, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152,
                   153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
                   165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176,
                   177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 188, 58,
@@ -53,11 +52,7 @@ def make_up(x, l):
     return val
 
 def parser_by_row(patient_id, l):
-    patient_data = [patient_id]
-
-    patient_data += [make_up(x-1, l) for x in useful_columns]
-
-
+    patient_data = [make_up(x-1, l) for x in useful_columns]
     return patient_data
 
 
@@ -73,13 +68,7 @@ dd = parse()
 
 headers = [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns]
 
-pd.DataFrame(dd).to_csv('clean_data.csv', header = headers)
+pd.DataFrame(dd).to_csv('clean_data.csv', header = headers, index = False)
 
-res = []
-for i in range(len(inpdf.iloc[:,135])):
-    x = inpdf.iloc[i,135]
-    if(x == 9):
-        x = 2
-    res += [[i,x]]
-
-pd.DataFrame(res).to_csv('results_data.csv', header = ['final_diagnosis_code'])
+res = np.array(inpdf.iloc[:,135])
+pd.DataFrame(res).to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
