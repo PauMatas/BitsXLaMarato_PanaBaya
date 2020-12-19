@@ -27,7 +27,7 @@ def test_hipotesis(column, data):
     if not clean_list1 or np.all(clean_list1 == clean_list1[0]) or np.all(clean_list2 == clean_list2[0]): # casos en el cas no hi ha cap valor numeric o es te una array uniforme
         return False
     stat, pval = stats.pearsonr(clean_list1, clean_list2)
-    print(column, pval)
+    #print(column, pval)
     return pval < 0.05
 
 impactful_variables = []
@@ -37,8 +37,8 @@ for column in data.columns:
             impactful_variables.append(column)
 
 print(impactful_variables)
-y = diagnosis
-X = diagnosis.loc[:,impactful_variables]
+y = diagnosis['final_diagnosis_code']
+X = data.loc[:,impactful_variables]
 X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=1)
 
 
