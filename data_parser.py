@@ -30,13 +30,9 @@ others =[6, 7, 16, 17, 18, 35, 115, 119, 124, 135, 143, 187, 191, 192,
          193, 194, 195, 197]
 
 #Corrections
-inpdf[118, 624] = indpf[118, 436] = indpf[118, 423] = indpf[118, 713] = indpf[118, 744] = 2
-inpdf[118, 764] = indpf[118, 960] = 1
-inpdf[123, 696] = indpf[123, 697] = indpf[123, 764] = 2
-
-"""
-name [type] (col in df)
-"""
+inpdf[118, 624] = inpdf[118, 436] = inpdf[118, 423] = inpdf[118, 713] = inpdf[118, 744] = 2
+inpdf[118, 764] = inpdf[118, 960] = 1
+inpdf[123, 696] = inpdf[123, 697] = inpdf[123, 764] = 2
 
 def make_up(x, l):
     val = l[x]
@@ -57,14 +53,14 @@ def make_up(x, l):
 def parser_by_row(patient_id, l):
     patient_data = []
 
-    # patient_id [int] (0)
-    patient_data.append(patient_id)
+    # patient_id 
+    patient_data += [patient_id]
+    # sanitary_id 
+    patient_data += l[1]
 
     for x in useful_columns:
         patient_data += make_up(x-1, l)
 
-    # sanitary_id [string] (1)
-    patient_data.append(l[1])
 
     return patient_data
 
