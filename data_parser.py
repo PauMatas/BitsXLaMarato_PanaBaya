@@ -26,6 +26,11 @@ date_columns = [117, 122, 189]
 
 others =[115, 119, 124, 135, 136, 143, 187, 191, 192, 193, 194, 195, 197]
 
+#Corrections
+inpdf[118, 624] = indpf[118, 436] = indpf[118, 423] = indpf[118, 713] = indpf[118, 744] = 2
+inpdf[118, 764] = indpf[118, 960] = 1
+inpdf[123, 696] = indpf[123, 697] = indpf[123, 764] = 2
+
 """
 name [type] (col in df)
 """
