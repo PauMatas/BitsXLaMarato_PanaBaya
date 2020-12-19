@@ -65,11 +65,24 @@ def parser_by_row(patient_id, l):
 
 dd = [parser_by_row(i, inpdf.iloc[i]) for i in range(len(inpdf))]
 
+
 headers = [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns]
 
-pd.DataFrame(dd).to_csv('clean_data.csv', header = headers, index = False)
+dd = pd.DataFrame(dd)
+dd = dd.replace([np.inf, -np.inf], np.nan)
+dd = dd.dropna()
+dd.to_csv('clean_data.csv', header = headers, index = False)
+print(np.any(np.isnan(dd)))
+print(np.all(np.isfinite(dd)))
 
 res = np.array(inpdf.iloc[:,135])
-pd.DataFrame(res).to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
+
+res = pd.DataFrame(res)
+res = res.replace([np.inf, -np.inf], np.nan)
+res = res.dropna()
+res.to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
+print(np.any(np.isnan(res)))
+print(np.all(np.isfinite(res)))
+
 
 print("Data cleaning done.")
