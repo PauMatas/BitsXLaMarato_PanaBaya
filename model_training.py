@@ -3,11 +3,20 @@ import numpy as np
 from scipy.stats import pearsonr, stats
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC, LinearSVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import Perceptron
+from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import RepeatedStratifiedKFold
 
 data = pd.read_csv("clean_data.csv")
 diagnosis = pd.read_csv("diagnosis_data.csv")
-
+print(len(data))
+print(len(diagnosis))
 def test_hipotesis(column, data):
     clean_list1, clean_list2 = [], []
     a, b = np.array(data[column]), np.array(diagnosis['final_diagnosis_code'])
