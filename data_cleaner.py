@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 
-def clean_data(file_name):
+def clean_data(file_name, save, known_result):
   try:
     aa = pd.read_csv(file_name)
   except:
@@ -70,14 +70,19 @@ def clean_data(file_name):
   headers = [inpdf.columns[i] for i in range(len(inpdf.columns)) if i+1 in useful_columns]
 
   dd = pd.DataFrame(dd)
-  dd.to_csv('clean_data.csv', header = headers, index = False)
+  if(save):
+    dd.to_csv('clean_data.csv', header = headers, index = False)
 
-  res = np.array(inpdf.iloc[:,135])
+  if(known_result):
+    res = np.array(inpdf.iloc[:,135])
 
-  res = pd.DataFrame(res)
-  res.to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
+    res = pd.DataFrame(res)
+    if(save):
+      res.to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
 
   if(not np.any(np.isnan(dd)) and np.all(np.isfinite(dd)) and not np.any(np.isnan(res)) and np.all(np.isfinite(res))):
         print("Data cleaning done.")
   else:
         print("Error in values.")
+
+  return dd
