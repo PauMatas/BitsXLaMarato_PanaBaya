@@ -1,22 +1,20 @@
+# Data frames
 import pandas as pd
+# Numeric
 import numpy as np
+# Machine Learning
 from scipy.stats import pearsonr, stats
 from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC, LinearSVC
+from sklearn.model_selection import RepeatedStratifiedKFold, train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.linear_model import Perceptron
-from sklearn.linear_model import SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import RepeatedStratifiedKFold
+
+
 
 data = pd.read_csv("clean_data.csv")
 diagnosis = pd.read_csv("diagnosis_data.csv")
-print(len(data))
-print(len(diagnosis))
+
+
 def test_hipotesis(column, data):
     clean_list1, clean_list2 = [], []
     a, b = np.array(data[column]), np.array(diagnosis['final_diagnosis_code'])
@@ -27,24 +25,51 @@ def test_hipotesis(column, data):
     if not clean_list1 or np.all(clean_list1 == clean_list1[0]) or np.all(clean_list2 == clean_list2[0]): # casos en el cas no hi ha cap valor numeric o es te una array uniforme
         return False
     stat, pval = stats.pearsonr(clean_list1, clean_list2)
-    #print(column, pval)
     return pval < 0.05
 
-impactful_variables = []
-for column in data.columns:
-    if (data.dtypes[column] in ['float64', 'int64']):
-        if (test_hipotesis(column, data)):
-            impactful_variables.append(column)
 
-print(impactful_variables)
+def feature_selection(data):
+    impactful_variables = []
+    for column in data.columns:
+        if (data.dtypes[column] in ['float64', 'int64']):
+            if (test_hipotesis(column, data)):
+                impactful_variables.append(column)
+    return impactful_variables
+
+
+
 y = diagnosis['final_diagnosis_code']
-X = data.loc[:,impactful_variables]
-X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=1)
+features = feature_selection(data)
+n_feat = len(features)
+X = data.loc[:,features]
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.4, random_state=1)
+# N = len(X)
+# X_train, X_val, y_train, y_val = X.iloc[:N//2, :], X.iloc[N//2:, :], y.iloc[:N//2], y.iloc[N//2:]
+
+print(len(X_train))
+print(len(X_val))
 
 
-# Logistic Regression
-logreg = LogisticRegression()
-logreg.fit(X_train, y_train)
-y_pred = logreg.predict(X_val)
-acc_log = round(logreg.score(X_train, y_train) * 100, 2)
-print('logreg accuracy:', acc_log)
+
+
+# Random Forest
+
+random_forest = RandomForestClassifier(n_estimators=100, max_features='sqrt')
+
+# random_forest = RandomForestClassifier(n_estimators=100, max_depth=None, min_samples_split=2, random_state=0)
+# scores = cross_val_score(random_forest, X_val, y_val, cv=5)
+# print(scores.mean()*100)
+#
+# print('-----------------------------------------------------------------------------------------------')
+
+random_forest.fit(X_train, y_train)
+acc_random_forest = round(random_forest.score(X_val, y_val) * 100, 10)
+print('Random forest accuracy:', acc_random_forest)
+
+y_pred = random_forest.predict(X_val)
+val_mae = mean_absolute_error(y_pred, y_val)
+print('MAE:', val_mae)
+
+
+scores = cross_val_score(random_forest, X_val, y_val, cv=5)
+print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
