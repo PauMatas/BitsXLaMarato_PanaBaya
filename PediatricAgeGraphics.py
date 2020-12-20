@@ -1,18 +1,24 @@
 ######################################################################
-####################        IMPORTS        ###########################
+####################   BEFORE STARTING     ###########################
 ######################################################################
 
+# ***** Imports: *****
+# Miscelaneous:
 import pandas as pd
 import numpy as np
 from scipy.stats import pearsonr, stats
 
-# visualization
+# Data visualization:
 import matplotlib.pyplot as plt
 from matplotlib.transforms import (
     Bbox, TransformedBbox, blended_transform_factory)
 from mpl_toolkits.axes_grid1.inset_locator import (
     BboxPatch, BboxConnector, BboxConnectorPatch)
 %matplotlib notebook
+
+# ***** Data reading: *****
+data = pd.read_csv("clean_data.csv")
+diagnosis = pd.read_csv("diagnosis_data.csv")
 
 ######################################################################
 
@@ -105,8 +111,6 @@ def test_hipotesis(column, data):
     return pval < 0.05
 
 def getDataDict():
-    data = pd.read_csv("clean_data.csv")
-    diagnosis = pd.read_csv("diagnosis_data.csv")
     dict1 = {}
 
     impactful_variables = []
@@ -164,4 +168,55 @@ def hbarImpactfulVariables():
 
     zoom_effect01(ax1, ax2, 0.95, 1)
 
+    plt.show()
+
+def correlationHouseCases():
+    identified = [0, 0] # posicio 0 pels que no tenen cas covid a casa i 1 pels que tenen cas covid a casa
+    ruled_out = [0, 0]
+    a, b = np.array(data['home_confirmed']), np.array(diagnosis['final_diagnosis_code'])
+    for i in range(len(a)):
+        if b[i] == 1: # si hi ha cas covid a casa
+            if a[i] == 1: # si el resultat del diagnosis ha estat positiu
+                identified[1] += 1
+            else:
+                ruled_out[1] += 1
+        else:
+            if a[i] == 1:
+                identified[0] += 1
+            else:
+                ruled_out[0] += 1
+
+    labels = ['0 = NO', '1 = YES']
+
+
+    x = np.arange(len(labels))  # the label locations
+    width = 0.2  # the width of the bars
+    plt.figure(figsize=(1000, 1000))
+
+    fig, ax = plt.subplots(figsize=(15,10))
+    rects1 = ax.bar(x - width / 2, identified, width, label='Virus identified')
+    rects2 = ax.bar(x + width / 2, ruled_out, width, label='Covid-19 has been ruled out')
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('NUMBER OF CASES')
+    ax.set_title('NUMBER OF COVID FINAL DIAGNOSIS DEPENDING ON HAVING ANYONE AT HOME WITH CONFIRMED COVID-19 DISEASE')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+
+    def autolabel(rects):
+        """Attach a text label above each bar in *rects*, displaying its height."""
+        for rect in rects:
+            height = rect.get_height()
+            ax.annotate('{}'.format(height),
+                        xy=(rect.get_x() + rect.get_width() / 2, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom')
+
+
+    autolabel(rects1)
+    autolabel(rects2)
+    fig.tight_layout()
     plt.show()
