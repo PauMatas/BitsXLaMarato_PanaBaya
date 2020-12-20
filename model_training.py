@@ -82,3 +82,6 @@ print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 def get_model():
     return random_forest
+
+def get_features():
+    return features
