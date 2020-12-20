@@ -121,7 +121,7 @@ def getDataDict():
 
     return dict1
 
-def autolabel(rects):
+def autolabel(rects, ax):
     """Attach a text label above each bar in *rects*, displaying its height."""
     for rect in rects:
         height = rect.get_height()
@@ -212,15 +212,14 @@ def correlationHouseCases():
     ax.set_xticklabels(labels)
     ax.legend()
 
-    autolabel(rects1)
-    autolabel(rects2)
+    autolabel(rects1, ax)
+    autolabel(rects2, ax)
     fig.tight_layout()
     plt.show()
 
 
 def featureImportances():
-    data = pd.read_csv("clean_data.csv")
-    diagnosis = pd.read_csv("diagnosis_data.csv")
+
     feat = ['province', 'family_country', 'smokers_home', 'survey_type', 'inclusion_criteria', 'sympt_epi', 'housemember_symptoms___1', 'housemember_symptoms___2', 'housemember_symptoms___3', 'housemember_symptoms___4', 'housemember_symptoms___5', 'home_confirmed', 'school_symptoms', 'school_symptoms_member___1', 'school_symptoms_member___2', 'school_symptoms_member___5', 'school_confirmed', 'symptoms_binary', 'fever', 'dysphonia', 'resp', 'tachypnea', 'ausc_resp', 'odynophagia', 'fatiga', 'fatigue_first', 'headache', 'conjuntivitis', 'dyarrea', 'splenomegaly', 'neuro', 'confusion', 'taste_first', 'smell', 'sero_response', 'sat_hb_o2_value', 'other', 'vaccines_binary', 'comorbidities_complete']
 
     y = diagnosis['final_diagnosis_code']
