@@ -40,7 +40,6 @@ def feature_selection(data):
 
 y = diagnosis['final_diagnosis_code']
 features = feature_selection(data)
-n_feat = len(features)
 X = data.loc[:,features]
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.4, random_state=1)
 # N = len(X)
@@ -55,14 +54,14 @@ print(len(X_val))
 # Random Forest
 
 random_forest = RandomForestClassifier(n_estimators=100, max_features='sqrt')
-
+random_forest.fit(X_train, y_train)
 # random_forest = RandomForestClassifier(n_estimators=100, max_depth=None, min_samples_split=2, random_state=0)
 # scores = cross_val_score(random_forest, X_val, y_val, cv=5)
 # print(scores.mean()*100)
 #
 # print('-----------------------------------------------------------------------------------------------')
 
-random_forest.fit(X_train, y_train)
+
 acc_random_forest = round(random_forest.score(X_val, y_val) * 100, 10)
 print('Random forest accuracy:', acc_random_forest)
 
