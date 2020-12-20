@@ -9,7 +9,7 @@ from sklearn.model_selection import RepeatedStratifiedKFold, train_test_split, c
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-
+print
 
 data = pd.read_csv("clean_data.csv")
 diagnosis = pd.read_csv("diagnosis_data.csv")
@@ -43,16 +43,6 @@ features = feature_selection(data)
 X = data.loc[:,features]
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.4, random_state=1)
 
-print('features:')
-print(features)
-print()
-print()
-# N = len(X)
-# X_train, X_val, y_train, y_val = X.iloc[:N//2, :], X.iloc[N//2:, :], y.iloc[:N//2], y.iloc[N//2:]
-
-print(len(X_train))
-print(len(X_val))
-
 
 
 
@@ -68,15 +58,15 @@ dump(random_forest, 'model.joblib')
 
 
 acc_random_forest = round(random_forest.score(X_val, y_val), 10)
-print('Random forest accuracy:', acc_random_forest)
+# print('Random forest accuracy:', acc_random_forest)
 
 y_pred = random_forest.predict(X_val)
 val_mae = mean_absolute_error(y_pred, y_val)
-print('MAE:', val_mae)
+# print('MAE:', val_mae)
 
 
 scores = cross_val_score(random_forest, X_val, y_val, cv=5)
-print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+# print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 
 
