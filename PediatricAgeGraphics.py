@@ -14,7 +14,6 @@ from matplotlib.transforms import (
     Bbox, TransformedBbox, blended_transform_factory)
 from mpl_toolkits.axes_grid1.inset_locator import (
     BboxPatch, BboxConnector, BboxConnectorPatch)
-%matplotlib notebook
 
 # ***** Data reading: *****
 data = pd.read_csv("clean_data.csv")
@@ -95,7 +94,7 @@ def zoom_effect01(ax1, ax2, xmin, xmax, **kwargs):
 
     return c1, c2, bbox_patch1, bbox_patch2, p
 
-def test_hipotesis(column, data):
+def test_hipotesis(column, data, dict1):
     clean_list1, clean_list2 = [], []
     a, b = np.array(data[column]), np.array(diagnosis['final_diagnosis_code'])
     for i in range(len(a)):
@@ -116,10 +115,20 @@ def getDataDict():
     impactful_variables = []
     for column in data.columns:
         if (data.dtypes[column] in ['float64', 'int64']):
-            if (test_hipotesis(column, data)):
+            if (test_hipotesis(column, data, dict1)):
                 impactful_variables.append(column)
 
     return dict1
+
+def autolabel(rects):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
 
 # --------------------------------------------------------------------
 
@@ -132,7 +141,6 @@ def hbarImpactfulVariables():
     dict2 = {w : dict1[w] for w in sorted_keys}
 
     plt.rcdefaults()
-    plt.figure(figsize=(10,10))
     ax1 = plt.subplot(221)
     ax2 = plt.subplot(212)
 
@@ -191,9 +199,8 @@ def correlationHouseCases():
 
     x = np.arange(len(labels))  # the label locations
     width = 0.2  # the width of the bars
-    plt.figure(figsize=(1000, 1000))
 
-    fig, ax = plt.subplots(figsize=(15,10))
+    fig, ax = plt.subplots()
     rects1 = ax.bar(x - width / 2, identified, width, label='Virus identified')
     rects2 = ax.bar(x + width / 2, ruled_out, width, label='Covid-19 has been ruled out')
 
@@ -204,19 +211,9 @@ def correlationHouseCases():
     ax.set_xticklabels(labels)
     ax.legend()
 
-
-    def autolabel(rects):
-        """Attach a text label above each bar in *rects*, displaying its height."""
-        for rect in rects:
-            height = rect.get_height()
-            ax.annotate('{}'.format(height),
-                        xy=(rect.get_x() + rect.get_width() / 2, height),
-                        xytext=(0, 3),  # 3 points vertical offset
-                        textcoords="offset points",
-                        ha='center', va='bottom')
-
-
     autolabel(rects1)
     autolabel(rects2)
     fig.tight_layout()
     plt.show()
+
+ 
