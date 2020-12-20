@@ -89,4 +89,5 @@ def clean_data(file_name, save, known_result):
   else:
         print("Error in values.")
 
+  dd.columns = headers
   return dd
