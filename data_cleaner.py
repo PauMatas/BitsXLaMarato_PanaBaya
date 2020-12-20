@@ -10,7 +10,11 @@ def clean_data(file_name, save, known_result):
     sys.exit()
 
   dd = []
-  inpdf = aa[aa['final_diagnosis_code'] != 2]
+
+  if(known_result):
+    inpdf = aa[aa['final_diagnosis_code'] != 2]
+  else:
+    inpdf = aa
   inpdf = inpdf.replace([np.inf, -np.inf], np.nan)
   inpdf = inpdf.dropna(subset = ['final_diagnosis_code'])
 
@@ -80,9 +84,10 @@ def clean_data(file_name, save, known_result):
     if(save):
       res.to_csv('diagnosis_data.csv', header = ['final_diagnosis_code'], index = False)
 
-  if(not np.any(np.isnan(dd)) and np.all(np.isfinite(dd)) and not np.any(np.isnan(res)) and np.all(np.isfinite(res))):
+  if(not np.any(np.isnan(dd)) and np.all(np.isfinite(dd))):
         print("Data cleaning done.")
   else:
         print("Error in values.")
 
+  dd.columns = headers
   return dd
