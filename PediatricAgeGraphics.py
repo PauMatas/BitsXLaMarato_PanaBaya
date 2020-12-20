@@ -7,6 +7,7 @@
 import pandas as pd
 import numpy as np
 from scipy.stats import pearsonr, stats
+import model_training as mdt
 
 # Data visualization:
 import matplotlib.pyplot as plt
@@ -216,4 +217,33 @@ def correlationHouseCases():
     fig.tight_layout()
     plt.show()
 
- 
+
+def featureImportances():
+    data = pd.read_csv("clean_data.csv")
+    diagnosis = pd.read_csv("diagnosis_data.csv")
+    feat = ['province', 'family_country', 'smokers_home', 'survey_type', 'inclusion_criteria', 'sympt_epi', 'housemember_symptoms___1', 'housemember_symptoms___2', 'housemember_symptoms___3', 'housemember_symptoms___4', 'housemember_symptoms___5', 'home_confirmed', 'school_symptoms', 'school_symptoms_member___1', 'school_symptoms_member___2', 'school_symptoms_member___5', 'school_confirmed', 'symptoms_binary', 'fever', 'dysphonia', 'resp', 'tachypnea', 'ausc_resp', 'odynophagia', 'fatiga', 'fatigue_first', 'headache', 'conjuntivitis', 'dyarrea', 'splenomegaly', 'neuro', 'confusion', 'taste_first', 'smell', 'sero_response', 'sat_hb_o2_value', 'other', 'vaccines_binary', 'comorbidities_complete']
+
+    y = diagnosis['final_diagnosis_code']
+    X = data.loc[:,feat]
+
+
+    forest = mdt.get_model()
+
+    forest.fit(X, y)
+    importances = forest.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in forest.estimators_],
+                 axis=0)
+    indices = np.argsort(importances)[::-1]
+
+
+
+    llista = [feat[i] for i in indices]
+
+    # Plot the impurity-based feature importances of the forest
+    plt.figure()
+    plt.title("Feature importances")
+    plt.bar(range(X.shape[1]), importances[indices],
+            color="r", yerr=std[indices], align="center")
+    plt.xticks(range(X.shape[1]), llista, rotation='vertical')
+    plt.xlim([-1, X.shape[1]])
+    plt.show()
